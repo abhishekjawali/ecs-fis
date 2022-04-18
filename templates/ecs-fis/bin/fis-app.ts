@@ -12,4 +12,4 @@ const fisVpc = new FisStackVpc(app, 'FisStackVpc', {
     },    
     description: "AWS FIS workshop - VPC stack. Creates VPC referenced by all other workshop resources"
 });
-
+// const fisAsg = new FisStackAsg(app, 'FisAsgStack', { vpc: fisVpc.vpc});

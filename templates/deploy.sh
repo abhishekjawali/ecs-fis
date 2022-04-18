@@ -34,20 +34,14 @@ cdk bootstrap aws://${ACCOUNT_ID}/${REGION}
 
 # VPC stack uses CDK
 (
-    echo "Provisioning VPC..."
-    cd vpc
+    echo "Provisioning All..."
+    cd ecs-fis
     npm install
-    npx cdk deploy FisStackVpc --require-approval never --outputs-file outputs.json
+    npx cdk deploy FisStackECS --require-approval never --outputs-file outputs.json
 )
 
 
-# ECS stack uses CDK
-(
-    echo "Provisioning ECS resources..."
-    cd ecs
-    npm install
-    npx cdk deploy FisStackEcs --require-approval never --outputs-file outputs.json
-)
+
 
 
 
