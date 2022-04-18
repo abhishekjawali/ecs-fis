@@ -10,7 +10,7 @@ export class FisStackEcs extends cdk.Stack {
     super(scope, id, props);
 
     const vpc = ec2.Vpc.fromLookup(this, 'FisVpc', { 
-      vpcName: 'FisStackECS/FisVpc'
+      vpcName: 'FisStackVpc/FisVpc'
     });
 
     const cluster = new ecs.Cluster(this, "Cluster", {

@@ -15,7 +15,7 @@ const fisEcsVpc = new FisStackEcsVpc(app, 'FisStackVpc', {
 });
 // const fisAsg = new FisStackAsg(app, 'FisAsgStack', { vpc: fisVpc.vpc});
 
-const fisEcs = new FisStackEcs(app, 'FisStackVpc', { 
+const fisEcs = new FisStackEcs(app, 'FisStackECS', { 
     env: { 
         account: process.env.CDK_DEFAULT_ACCOUNT, 
         region: process.env.CDK_DEFAULT_REGION 
