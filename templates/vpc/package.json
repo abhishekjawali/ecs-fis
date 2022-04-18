@@ -1,0 +1,29 @@
+{
+  "name": "cdk-definition",
+  "version": "0.1.0",
+  "bin": {
+    "cdk-definition": "bin/cdk-definition.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@aws-cdk/assert": "2.20.0",
+    "@types/jest": "^27.4.1",
+    "@types/node": "17.0.23",
+    "aws-cdk": "2.20.0",
+    "jest": "^27.5.1",
+    "ts-jest": "^27.1.4",
+    "ts-node": "^10.7.0",
+    "typescript": "~4.6.3"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-autoscaling": "^1.152.0",
+    "@aws-cdk/aws-ec2": "^1.152.0",
+    "@aws-cdk/aws-elasticloadbalancingv2": "^1.152.0",
+    "@aws-cdk/core": "^1.152.0"
+  }
+}
