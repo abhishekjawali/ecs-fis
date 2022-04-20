@@ -1,17 +1,19 @@
-import * as cdk from "@aws-cdk/core";
-import ec2 = require("@aws-cdk/aws-ec2");
-import { IVpc } from '@aws-cdk/aws-ec2';
-import * as ecs from "@aws-cdk/aws-ecs";
-import * as ecs_patterns from "@aws-cdk/aws-ecs-patterns";
-import * as autoscaling from "@aws-cdk/aws-autoscaling";
-import * as iam from "@aws-cdk/aws-iam";
-import * as fis from '@aws-cdk/aws-fis';
-
-export class FisStackEcs extends cdk.Stack {
-  public vpc: IVpc;
+import * as cdk from 'aws-cdk-lib';
+import { Stack, StackProps, Tags } from 'aws-cdk-lib';
+import { Construct } from 'constructs';
+import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as ecs from 'aws-cdk-lib/aws-ecs';
+import * as ecs_patterns from 'aws-cdk-lib/aws-ecs-patterns';
+import * as autoscaling from "aws-cdk-lib/aws-autoscaling";
+import * as iam from "aws-cdk-lib/aws-iam";
+import * as fis from "aws-cdk-lib/aws-fis";
 
 
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+export class EcsFisStack extends Stack {
+
+  public vpc: ec2.IVpc;
+
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     //*** Begin VPC Block ***/ 
@@ -30,8 +32,10 @@ export class FisStackEcs extends cdk.Stack {
       vpc: this.vpc,
       instanceType: new ec2.InstanceType("t3.medium"),
       machineImage: ecs.EcsOptimizedImage.amazonLinux2(),
-      desiredCapacity: 3
+      desiredCapacity: 1
     });
+
+    Tags.of(asg).add("DevLab","ANZ");
 
     cluster.addAsgCapacityProvider(
       new ecs.AsgCapacityProvider(this, "CapacityProvider", {
@@ -69,8 +73,8 @@ export class FisStackEcs extends cdk.Stack {
     asg.attachToApplicationTargetGroup(sampleAppService.targetGroup);
     //*** End ECS Block ***/ 
 
-    //*** Begin FIS Block ***/ 
-    // FIS Role
+    //*** Begin FIS IAM Block ***/ 
+    
     const fisrole = new iam.Role(this, "fis-role", {
       assumedBy: new iam.ServicePrincipal("fis.amazonaws.com", {
         conditions: {
@@ -88,7 +92,7 @@ export class FisStackEcs extends cdk.Stack {
     fisrole.addToPolicy(
       new iam.PolicyStatement({
         resources: ["*"],
-        actions: ["ecs:ListContainerInstances", "ecs:DescribeClusters"],
+        actions: ["ecs:ListContainerInstances", "ecs:DescribeClusters", "ecs:StopTask"],
       })
     );
 
@@ -126,7 +130,11 @@ export class FisStackEcs extends cdk.Stack {
         ],
       })
     );
-    //*** End FIS Block ***/ 
+
+   
+
+
+    //*** End FIS IAM Block ***/ 
 
     const ecsUrl = new cdk.CfnOutput(this, 'FisEcsUrl', { value: 'http://' + sampleAppService.loadBalancer.loadBalancerDnsName });
 
@@ -136,5 +144,7 @@ export class FisStackEcs extends cdk.Stack {
       description: "The Arn of the IAM role",
       exportName: "FISIamRoleArn",
     });
+
+
   }
 }
