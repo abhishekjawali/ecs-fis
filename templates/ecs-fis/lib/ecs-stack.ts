@@ -5,6 +5,7 @@ import * as ecs from "@aws-cdk/aws-ecs";
 import * as ecs_patterns from "@aws-cdk/aws-ecs-patterns";
 import * as autoscaling from "@aws-cdk/aws-autoscaling";
 import * as iam from "@aws-cdk/aws-iam";
+import * as fis from '@aws-cdk/aws-fis';
 
 export class FisStackEcs extends cdk.Stack {
   public vpc: IVpc;
@@ -13,49 +14,14 @@ export class FisStackEcs extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
     
-    // this.vpc = new ec2.Vpc(this, 'FisVpc', {
-      
-    //   cidr: "10.0.0.0/16",
-    //   maxAzs: 2,
-    //   subnetConfiguration: [
-    //     {
-    //       cidrMask: 24,
-    //       name: "PublicSubnet1",
-    //       subnetType: ec2.SubnetType.PUBLIC
-    //     },
-    //     {
-    //       cidrMask: 24,
-    //       name: "PublicSubnet2",
-    //       subnetType: ec2.SubnetType.PUBLIC
-    //     },
-    //     {
-    //       cidrMask: 24,
-    //       name: "PublicSubnet3",
-    //       subnetType: ec2.SubnetType.PUBLIC
-    //     },
-    //     {
-    //       cidrMask: 24,
-    //       name: "PrivateSubnet1",
-    //       subnetType: ec2.SubnetType.PRIVATE
-    //     },
-    //     {
-    //       cidrMask: 24,
-    //       name: "PrivateSubnet2",
-    //       subnetType: ec2.SubnetType.PRIVATE
-    //     },
-    //     {
-    //       cidrMask: 24,
-    //       name: "PrivateSubnet3",
-    //       subnetType: ec2.SubnetType.PRIVATE
-    //     },
-    //   ]
-    // });
-
+    //*** Begin VPC Block ***/ 
     this.vpc = new ec2.Vpc(this, 'FisVpc', {
       cidr: "10.0.0.0/16",
       maxAzs: 3
     });
+    //*** End VPC Block ***/ 
 
+    //*** Begin ECS Block ***/ 
     const cluster = new ecs.Cluster(this, "Cluster", {
       vpc: this.vpc
     });
@@ -101,6 +67,23 @@ export class FisStackEcs extends cdk.Stack {
     });
 
     asg.attachToApplicationTargetGroup(sampleAppService.targetGroup);
+    //*** End ECS Block ***/ 
+
+    //*** Begin FIS Block ***/ 
+    // FIS Role
+    const fisrole = new iam.Role(this, "fis-role", {
+      assumedBy: new iam.ServicePrincipal("fis.amazonaws.com", {
+        conditions: {
+          StringEquals: {
+            "aws:SourceAccount": this.account,
+          },
+          ArnLike: {
+            "aws:SourceArn": `arn:aws:fis:${this.region}:${this.account}:experiment/*`,
+          },
+        },
+      }),
+    });
+    //*** End FIS Block ***/ 
 
     const ecsUrl = new cdk.CfnOutput(this, 'FisEcsUrl', {value: 'http://' + sampleAppService.loadBalancer.loadBalancerDnsName});
   }
