@@ -7,11 +7,12 @@ import * as autoscaling from "@aws-cdk/aws-autoscaling";
 import * as iam from "@aws-cdk/aws-iam";
 
 export class FisStackEcs extends cdk.Stack {
-  //public vpc: IVpc;
+  public vpc: IVpc;
+  
 
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-
+    
     // this.vpc = new ec2.Vpc(this, 'FisVpc', {
       
     //   cidr: "10.0.0.0/16",
@@ -50,12 +51,17 @@ export class FisStackEcs extends cdk.Stack {
     //   ]
     // });
 
+    this.vpc = new ec2.Vpc(this, 'FisVpc', {
+      cidr: "10.0.0.0/16",
+      maxAzs: 3
+    });
+
     const cluster = new ecs.Cluster(this, "Cluster", {
-      //vpc: this.vpc
+      vpc: this.vpc
     });
 
     const asg = new autoscaling.AutoScalingGroup(this, "EcsAsgProvider", {
-     // vpc: this.vpc,
+      vpc: this.vpc,
       instanceType: new ec2.InstanceType("t3.medium"),
       machineImage: ecs.EcsOptimizedImage.amazonLinux2(),
       desiredCapacity: 3
