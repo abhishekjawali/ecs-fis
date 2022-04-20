@@ -37,7 +37,7 @@ cdk bootstrap aws://${ACCOUNT_ID}/${REGION}
     echo "Provisioning All..."
     cd ecs-fis
     npm install
-    npx cdk deploy FisStackECS --require-approval never --outputs-file outputs.json
+    npx cdk deploy ECSFIS --require-approval never --outputs-file outputs.json
 )
 
 
