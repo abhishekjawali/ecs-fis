@@ -4,7 +4,7 @@ import { ECSFIS } from '../lib/ecs-fis-parent-stack';
 
 const app = new cdk.App();
 
-const fisEcs = new ECSFIS(app, 'FisStackECS', { 
+const fisEcs = new ECSFIS(app, 'ECSFIS', { 
     env: { 
         account: process.env.CDK_DEFAULT_ACCOUNT, 
         region: process.env.CDK_DEFAULT_REGION 
