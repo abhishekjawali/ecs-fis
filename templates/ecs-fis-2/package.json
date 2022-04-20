@@ -1,0 +1,38 @@
+{
+  "name": "aws-fis-cdk-templates",
+  "version": "0.1.0",
+  "bin": {
+    "aws-fis-cdk-templates": "bin/aws-fis-cdk-templates.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "jest",
+    "cdk": "cdk"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.10",
+    "@types/js-yaml": "^4.0.5",
+    "@types/node": "10.17.27",
+    "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "@typescript-eslint/parser": "^5.9.0",
+    "aws-cdk-lib": "^2.1.0",
+    "constructs": "^10.0.0",
+    "eslint": "^8.6.0",
+    "jest": "^26.4.2",
+    "prettier-eslint": "^8.2.2",
+    "ts-jest": "^26.2.0",
+    "ts-node": "^9.0.0",
+    "typescript": "~3.9.7"
+  },
+  "peerdependencies": {
+    "aws-cdk-lib": "^2.0.0",
+    "constructs": "^10.0.0",
+    "cdk-ssm-document": "^2.2.1",
+    "source-map-support": "^0.5.16"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "node": "^17.2.0"
+  }
+}

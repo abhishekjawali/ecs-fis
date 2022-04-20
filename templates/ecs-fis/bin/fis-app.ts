@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import * as cdk from '@aws-cdk/core';
-import { FisStackEcs } from '../lib/ecs-stack';
+import { ECSFIS } from '../lib/ecs-fis-parent-stack';
 
 const app = new cdk.App();
 
-const fisEcs = new FisStackEcs(app, 'FisStackECS', { 
+const fisEcs = new ECSFIS(app, 'FisStackECS', { 
     env: { 
         account: process.env.CDK_DEFAULT_ACCOUNT, 
         region: process.env.CDK_DEFAULT_REGION 

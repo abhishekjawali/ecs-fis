@@ -9,11 +9,11 @@ import * as fis from '@aws-cdk/aws-fis';
 
 export class FisStackEcs extends cdk.Stack {
   public vpc: IVpc;
-  
+
 
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
-    
+
     //*** Begin VPC Block ***/ 
     this.vpc = new ec2.Vpc(this, 'FisVpc', {
       cidr: "10.0.0.0/16",
@@ -46,7 +46,7 @@ export class FisStackEcs extends cdk.Stack {
 
     const taskDefinition = new ecs.Ec2TaskDefinition(this, "SampleAppTaskDefinition", {
     });
-    
+
     taskDefinition.addContainer("SampleAppContainer", {
       image: ecs.ContainerImage.fromRegistry("amazon/amazon-ecs-sample"),
       memoryLimitMiB: 256,
@@ -83,8 +83,58 @@ export class FisStackEcs extends cdk.Stack {
         },
       }),
     });
+
+    // AllowFISExperimentRoleECSReadOnly
+    fisrole.addToPolicy(
+      new iam.PolicyStatement({
+        resources: ["*"],
+        actions: ["ecs:ListContainerInstances", "ecs:DescribeClusters"],
+      })
+    );
+
+    // AllowFISExperimentRoleECSUpdateState
+    fisrole.addToPolicy(
+      new iam.PolicyStatement({
+        resources: [`arn:aws:ecs:*:*:container-instance/*`],
+        actions: ["ecs:UpdateContainerInstancesState"],
+      })
+    );
+
+    // AllowFISExperimentRoleEC2Actions
+    fisrole.addToPolicy(
+      new iam.PolicyStatement({
+        resources: [`arn:aws:ec2:*:*:instance/*`],
+        actions: [
+          "ec2:RebootInstances",
+          "ec2:StopInstances",
+          "ec2:StartInstances",
+          "ec2:TerminateInstances"
+        ]
+      })
+    );
+
+    //AllowFISExperimentRoleSSMReadOnly
+    fisrole.addToPolicy(
+      new iam.PolicyStatement({
+        resources: ["*"],
+        actions: [
+          "ec2:DescribeInstances",
+          "ssm:ListCommands",
+          "ssm:CancelCommand",
+          "ssm:PutParameter",
+          "ssm:SendCommand"
+        ],
+      })
+    );
     //*** End FIS Block ***/ 
 
-    const ecsUrl = new cdk.CfnOutput(this, 'FisEcsUrl', {value: 'http://' + sampleAppService.loadBalancer.loadBalancerDnsName});
+    const ecsUrl = new cdk.CfnOutput(this, 'FisEcsUrl', { value: 'http://' + sampleAppService.loadBalancer.loadBalancerDnsName });
+
+    // Outputs
+    new cdk.CfnOutput(this, "FISIamRoleArn", {
+      value: fisrole.roleArn,
+      description: "The Arn of the IAM role",
+      exportName: "FISIamRoleArn",
+    });
   }
 }
