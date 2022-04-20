@@ -10,40 +10,45 @@ export class FisStackEcsVpc extends cdk.Stack {
 
 
     this.vpc = new ec2.Vpc(this, 'FisVpc', {
+      
       cidr: "10.0.0.0/16",
       maxAzs: 2,
       subnetConfiguration: [
         {
           cidrMask: 24,
-          name: "FisPub",
+          name: "PublicSubnet1",
           subnetType: ec2.SubnetType.PUBLIC
         },
         {
           cidrMask: 24,
-          name: "FisPriv",
+          name: "PublicSubnet2",
+          subnetType: ec2.SubnetType.PUBLIC
+        },
+        {
+          cidrMask: 24,
+          name: "PublicSubnet3",
+          subnetType: ec2.SubnetType.PUBLIC
+        },
+        {
+          cidrMask: 24,
+          name: "PrivateSubnet1",
           subnetType: ec2.SubnetType.PRIVATE
         },
         {
           cidrMask: 24,
-          name: "FisIso",
-          subnetType: ec2.SubnetType.ISOLATED
+          name: "PrivateSubnet2",
+          subnetType: ec2.SubnetType.PRIVATE
+        },
+        {
+          cidrMask: 24,
+          name: "PrivateSubnet3",
+          subnetType: ec2.SubnetType.PRIVATE
         },
       ]
     });
 
     new cdk.CfnOutput(this, 'FisVpcId', { value: this.vpc.vpcId });
-    
-    this.vpc.selectSubnets({ subnetType: ec2.SubnetType.PUBLIC }).subnets.map((subnet, index) => {
-      new cdk.CfnOutput(this, 'FisPub' + (index + 1), { value: subnet.subnetId });
-    });
-    this.vpc.selectSubnets({ subnetType: ec2.SubnetType.PRIVATE }).subnets.map((subnet, index) => {
-      new cdk.CfnOutput(this, 'FisPriv' + (index + 1), { value: subnet.subnetId });
-    });
-    this.vpc.selectSubnets({ subnetType: ec2.SubnetType.ISOLATED }).subnets.map((subnet, index) => {
-      new cdk.CfnOutput(this, 'FisIso' + (index + 1), { value: subnet.subnetId });
-    });
-
-
+  
 
   }
 }

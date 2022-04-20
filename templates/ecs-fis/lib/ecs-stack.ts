@@ -1,27 +1,64 @@
 import * as cdk from "@aws-cdk/core";
 import ec2 = require("@aws-cdk/aws-ec2");
+import { IVpc } from '@aws-cdk/aws-ec2';
 import * as ecs from "@aws-cdk/aws-ecs";
 import * as ecs_patterns from "@aws-cdk/aws-ecs-patterns";
 import * as autoscaling from "@aws-cdk/aws-autoscaling";
 import * as iam from "@aws-cdk/aws-iam";
 
 export class FisStackEcs extends cdk.Stack {
+  public vpc: IVpc;
+
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const vpc = ec2.Vpc.fromLookup(this, 'FisVpc', { 
-      vpcName: 'FisStackEcsVpc/FisVpc'
+    this.vpc = new ec2.Vpc(this, 'FisVpc', {
+      
+      cidr: "10.0.0.0/16",
+      maxAzs: 2,
+      subnetConfiguration: [
+        {
+          cidrMask: 24,
+          name: "PublicSubnet1",
+          subnetType: ec2.SubnetType.PUBLIC
+        },
+        {
+          cidrMask: 24,
+          name: "PublicSubnet2",
+          subnetType: ec2.SubnetType.PUBLIC
+        },
+        {
+          cidrMask: 24,
+          name: "PublicSubnet3",
+          subnetType: ec2.SubnetType.PUBLIC
+        },
+        {
+          cidrMask: 24,
+          name: "PrivateSubnet1",
+          subnetType: ec2.SubnetType.PRIVATE
+        },
+        {
+          cidrMask: 24,
+          name: "PrivateSubnet2",
+          subnetType: ec2.SubnetType.PRIVATE
+        },
+        {
+          cidrMask: 24,
+          name: "PrivateSubnet3",
+          subnetType: ec2.SubnetType.PRIVATE
+        },
+      ]
     });
 
     const cluster = new ecs.Cluster(this, "Cluster", {
-      vpc: vpc
+      vpc: this.vpc
     });
 
     const asg = new autoscaling.AutoScalingGroup(this, "EcsAsgProvider", {
-      vpc: vpc,
+      vpc: this.vpc,
       instanceType: new ec2.InstanceType("t3.medium"),
       machineImage: ecs.EcsOptimizedImage.amazonLinux2(),
-      desiredCapacity: 1
+      desiredCapacity: 3
     });
 
     cluster.addAsgCapacityProvider(

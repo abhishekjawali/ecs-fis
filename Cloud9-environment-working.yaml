@@ -1,30 +1,23 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: AWS CloudFormation template for dynamic Cloud 9 setups. Creates a Cloud9
-  bootstraps the instance.
+Description: AWS CloudFormation template provisioning AWS Cloud9.
 Parameters:
-  ExampleC9InstanceType:
-    Description: Example Cloud9 instance type
+  Cloud9InstanceType:
+    Description: Cloud9 instance type
     Type: String
-    Default: t3.medium
-    ConstraintDescription: Must be a valid Cloud9 instance type
-  ExampleC9EnvType: 
-    Description: Environment type.
-    Default: self
+    Default: t3.small
+  GitRepositoryURL:
+    Description: The Git repository URL for the project we are cloning
     Type: String
-    ConstraintDescription: must specify self or 3rdParty.
-  ExampleC9InstanceVolumeSize: 
-    Type: Number
-    Description: The Size in GB of the Cloud9 Instance Volume. 
-    Default: 15
+    Default: https://github.com/abhishekjawali/ecs-fis.git
 
 Resources:
 ################## PERMISSIONS AND ROLES #################
-  ExampleC9Role:
+  Cloud9IAMRole:
     Type: AWS::IAM::Role
     Properties:
       Tags:
         - Key: Environment
-          Value: AWS Example
+          Value: DevLabs
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -39,39 +32,32 @@ Resources:
       - arn:aws:iam::aws:policy/AdministratorAccess
       Path: "/"
 
-################## SSM BOOTSRAP HANDLER ###############
-  ExampleC9OutputBucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Delete
-
-
 ################## INSTANCE #####################
-  ExampleC9InstanceProfile:
+  Cloud9InstanceProfile:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Path: "/"
       Roles:
-      - Ref: ExampleC9Role
+      - Ref: Cloud9IAMRole
 
-  ExampleC9Instance:
-    Description: "-"
-    DependsOn: ExampleC9BootstrapAssociation
+  Cloud9Instance:
+    Description: "Cloud9 environment for the ANZ Summit DevLabs"
     Type: AWS::Cloud9::EnvironmentEC2
     Properties:
-      Description: AWS Cloud9 instance for Examples
+      Description: AWS Cloud9 instance
       AutomaticStopTimeMinutes: 3600
       InstanceType:
-        Ref: ExampleC9InstanceType
+        Ref: Cloud9InstanceType
       Name:
         Ref: AWS::StackName
       Repositories:
         -
-           PathComponent: / 
-           RepositoryUrl: https://github.com/aws-samples/aws-fault-injection-simulator-workshop
+           PathComponent: /devlabs
+           RepositoryUrl: !Ref GitRepositoryURL
       Tags: 
         - 
           Key: Environment
-          Value: AWS Example
+          Value: DevLabs
 
 Outputs: 
   Cloud9IDE:
@@ -81,6 +67,6 @@ Outputs:
       - - https://
         - Ref: AWS::Region
         - ".console.aws.amazon.com/cloud9/ide/"
-        - Ref: ExampleC9Instance
+        - Ref: Cloud9Instance
         - "?region="
         - Ref: AWS::Region
