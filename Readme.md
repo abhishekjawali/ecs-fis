@@ -29,7 +29,7 @@ You will execute the following experiment scenarios against an application that 
 ## Run the FIS experiments
 
 <details>
-### <summary>Experiment 1: </summary>
+<summary>### Experiment 1: </summary>
 **What** : In this experiment, you will ensure that the containerized application running on Amazon ECS is designed in a fault tolerant way, so that even if an instance in the cluster fails, the application is still available. 
 
 **How**: For injecting faults into the applications and AWS services, we will use the AWS Fault Injection Simulation (FIS) service. There are two steps in running AWS FIS experiments:
