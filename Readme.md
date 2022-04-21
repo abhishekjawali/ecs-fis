@@ -39,10 +39,13 @@ Let us create an experiment template for the first experiment.
 1. Navigate to AWS FIS console. You can also use this [direct link:](https://console.aws.amazon.com/fis/home?region=us-west-2#Home) 
 2. Choose Experiment Templates on the left side.
 ![Create Experiment Template Home](/document/images/1-FIS-Create-Home.png "Create Experiment Template")
+
 3. Click on 'Create Experiment Template'. This will open another page which helps in creating the FIS experiment template.
 4. For Description enter "Testing if the application is still accessbile if on the ECS Instance is down".
 5. For Name enter "Test-ECS-Instance-Failure" 
 6. For IAM Role, choose the IAM Role (from drodown) that was created as part of CloudFormation. The IAM Role name will be starting with 'EcsFisStack-fisrole....'
+![Create Experiment Template Basic](/document/images/1-FIS-Create-Exp.png "Create Experiment Template First part")
+
 7. Let us add actions. Actions define the kind of operation that FIS will execute. Click on 'Add Actions', in the Actions section. 
 8. For Name enter "Stopping-ECS-Instance".
 9. For Action Type, choose "aws:ec2:stop-instance" from the dropdown. 
