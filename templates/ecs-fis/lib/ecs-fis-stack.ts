@@ -65,7 +65,7 @@ export class EcsFisStack extends Stack {
     const sampleAppService = new ecs_patterns.ApplicationLoadBalancedEc2Service(this, "SampleAppService", {
       cluster: cluster,
       cpu: 256,
-      desiredCount: 1,
+      desiredCount: 2,
       memoryLimitMiB: 512,
       taskDefinition: taskDefinition
     });
