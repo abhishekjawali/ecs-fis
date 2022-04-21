@@ -29,17 +29,19 @@ You will execute the following experiment scenarios against an application that 
 ## Run the FIS experiments
 
 <details>
-<summary>Experiment 1: </summary>
+<summary>Experiment 1: </summary>  
+
 ### Experiment 1: 
 
 **What**: In this experiment, you will ensure that the containerized application running on Amazon ECS is designed in a fault tolerant way, so that even if an instance in the cluster fails, the application is still available.  
 
 
-**How**: For injecting faults into the applications and AWS services, we will use the AWS Fault Injection Simulation (FIS) service. There are two steps in running AWS FIS experiments:
-a. **First step** is to create an experiment template, which instructs AWS FIS on what this experiment is about and against which resources the experiment will be run against.
+**How**: For injecting faults into the applications and AWS services, we will use the AWS Fault Injection Simulation (FIS) service. There are two steps in running AWS FIS experiments:  
+a. **First step** is to create an experiment template, which instructs AWS FIS on what this experiment is about and against which resources the experiment will be run against.  
 b. **Second step** is actual running of the experiment. 
 
-Let us create an experiment template for the first experiment.
+#### Let us create an experiment template for the first experiment.
+
 1. Navigate to AWS FIS console. You can also use this [direct link:](https://console.aws.amazon.com/fis/home?region=us-west-2#Home) 
 2. Choose Experiment Templates on the left side.
 ![Create Experiment Template Home](/document/images/1-FIS-Create-Home.png "Create Experiment Template")
@@ -68,13 +70,16 @@ Let us create an experiment template for the first experiment.
 
 19. Click on 'Create Experiment Template' at the end of the page. It will ask for an additional confirmation in the popup. Enter create and confirm.
 
-Its time now to run the experiment and validate the experiemnt scenario. 
+#### Its time now to run the experiment and validate the experiemnt scenario. 
+
 1. Click on Actions and click on Start.
 2. In the next page, click on Start Experiment. 
 3. In the popup, enter 'start' and confirm.
 ![FIS Start](/document/images/1-FIS-ExpTemplate-Start.png "FIS Start")
 
-Lets access the application:
+
+#### Lets access the application:
+
 1. Get the application URL from the following command
     ```
     appURL=`aws cloudformation describe-stacks --region us-west-2 --stack-name=EcsFisStack --query "Stacks[0].Outputs[?OutputKey=='FisEcsUrl'].OutputValue[]" --output text` 
@@ -85,12 +90,14 @@ Lets access the application:
     ```
 3. What do you observe? Why is application returning '503 Service Temporarily Unavailable' response? 
 
-Lets Observe whats happening:
-1. The ECS Service is configured to run 2 instances of the same task. However, the ECS Cluster has only 1 EC2 instance attached to it. As per the FIS experiment, the only EC2 instance was terminated and hence the ECS tasks had no compute to run on. 
-2. The Auto Scaling Group for EC2 instance will eventually bring up a new instance, which gets attached to ECS cluster and the pending tasks gets deployed. Eventually the application becomes available. However, there will be a delay during the time where the ASG will bring up a new instance and task gets deployed.
-3. As a best practice to ensure high availability of the applications, we should not only look at running multiple instances of ECS tasks, we should also ensure that the underlying EC2 instance is also configured to be highly available. 
+#### Lets Observe whats happening:
 
-Lets fix the problem:
+1. The ECS Service is configured to run 2 instances of the same task. However, the ECS Cluster has only 1 EC2 instance attached to it. As per the FIS experiment, the only EC2 instance was terminated and hence the ECS tasks had no compute to run on.  
+2. The Auto Scaling Group for EC2 instance will eventually bring up a new instance, which gets attached to ECS cluster and the pending tasks gets deployed. Eventually the application becomes available. However, there will be a delay during the time where the ASG will bring up a new instance and task gets deployed.  
+3. As a best practice to ensure high availability of the applications, we should not only look at running multiple instances of ECS tasks, we should also ensure that the underlying EC2 instance is also configured to be highly available.  
+
+### Lets fix the problem:
+
 1. Navigate to Auto Scaling Groups in the EC2 console. Or use this [direct link](https://us-west-2.console.aws.amazon.com/ec2autoscaling/home?region=us-west-2#/details)
 2. Choose the only ASG. Observe that the minimum, maximum and desired capacity is set as 1. 
 3. Click on Edit and increase the desired capacity,  minimum capacity and maximum capacity to 2. Click on Update. This will bring up additional EC2 instance, which will be attached to the ECS cluster. 
@@ -98,7 +105,8 @@ Lets fix the problem:
 
 4. Navigate to [EC2 instances tab](https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#Instances) and observe the new instance being created automatically. 
 
-Validate again
+### Validate again
+
 1. Navigate to [FIS console](https://us-west-2.console.aws.amazon.com/fis/home?region=us-west-2#ExperimentTemplates) and click on the experiment ID for the 'Test-ECS-Instance-Failure' experiment.
 2. Choose Actions and Start the experiment. Confirm in the popup menu as earlier. 
 3. Hit the URL again, either in the browser or even from Cloud9 command line
