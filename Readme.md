@@ -51,20 +51,24 @@ Let us create an experiment template for the first experiment.
 9. For Action Type, choose "aws:ec2:stop-instance" from the dropdown. 
 10. For Target, choose "Instances-Target-1".
 11. Click on Save at the top of Actions menu. 
+![FIS Action](/document/images/1-FIS-Action.png "FIS Action")
+
 12. Lets now define the targets against which the action will be executed. When you created an action, a default target named 'Instances-Target-1' was created in step 10. You should see that in the target section. Click on Edit. 
 13. All the ECS instances that are created for this lab have a tag "DevLab:ANZ". For this experiment, we will target all the EC2 instances that have this tag set. In the target method, select 'Resource tags, filters and parameters'.
 14. Click Add New tag. 
 15. For Key, provide 'DevLab'. For Value, enter 'ANZ'.
 16. Let us target only the running instances. Click on 'Add New Filter'. Enter 'State.Name' for Attribute Path and 'running' for value.
 17. In the Selection Mode dropdown, choose Percent and give the percentage value as 50.
-16. Leave all othere fields as it is. Click on Save. 
-16. Click on 'Create Experiment Template' at the end of the page. It will ask for an additional confirmation in the popup. Enter create and confirm.
+18. Leave all othere fields as it is. Click on Save. 
+![FIS Target](/document/images/1-FIS-Target.png "FIS Target")
+
+19. Click on 'Create Experiment Template' at the end of the page. It will ask for an additional confirmation in the popup. Enter create and confirm.
 
 Its time now to run the experiment and validate the experiemnt scenario. 
 1. Click on Actions and click on Start.
 2. In the next page, click on Start Experiment. 
 3. In the popup, enter 'start' and confirm.
-
+![FIS Start](/document/images/1-FIS-ExpTemplate-Start.png "FIS Start")
 
 Lets access the application:
 1. Get the application URL from the following command
@@ -86,6 +90,8 @@ Lets fix the problem:
 1. Navigate to Auto Scaling Groups in the EC2 console. Or use this [direct link](https://us-west-2.console.aws.amazon.com/ec2autoscaling/home?region=us-west-2#/details)
 2. Choose the only ASG. Observe that the minimum, maximum and desired capacity is set as 1. 
 3. Click on Edit and increase the desired capacity,  minimum capacity and maximum capacity to 2. Click on Update. This will bring up additional EC2 instance, which will be attached to the ECS cluster. 
+![ASG](/document/images/1-FIS-ASG.png "ASG Update")
+
 4. Navigate to [EC2 instances tab](https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#Instances) and observe the new instance being created automatically. 
 
 Validate again
