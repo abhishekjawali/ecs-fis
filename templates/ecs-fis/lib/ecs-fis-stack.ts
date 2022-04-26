@@ -33,6 +33,7 @@ export class EcsFisStack extends Stack {
     cluster.addCapacity('DefaultAutoScalingGroupCapacity', {
       instanceType: new ec2.InstanceType("t3.medium"),
       desiredCapacity: 1,
+      autoScalingGroupName: 'ecs-fis-asg'
     });
 
     // const asg = new autoscaling.AutoScalingGroup(this, "EcsAsgProvider", {

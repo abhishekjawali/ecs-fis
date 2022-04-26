@@ -33,7 +33,9 @@ You will execute the following experiment scenarios against an application that 
 
 2. Reset the ECS Instance and ECS Tasks
     ```
-    
+    aws ecs update-service --cluster ECS-FIS --service sample-app-service --desired-count 1
+    aws autoscaling update-auto-scaling-group --auto-scaling-group-name ecs-fis-asg --min-size 1 --max-size 1
+    aws ecs update-service --cluster ECS-FIS --service sample-app-service --desired-count 2
     ```
 
 ## Run the FIS experiments
