@@ -7,7 +7,6 @@ You will learn how to use FIS and other AWS tools to inject faults in your infra
 
 You will execute the following experiment scenarios against an application that is running on Amazon ECS and identify faults in the configuration. 
  - How to validate application resiliency if an ECS instance is interrupted?
- - What is the impact of the ECS task if the ECS instance is under stress?
  - How to test a failure of an ECS task?
 
 
@@ -121,14 +120,70 @@ b. **Second step** is actual running of the experiment.
 <details>
 <summary>Experiment 2: </summary>  
 
+
 ### Experiment 2: 
 
-**What**: In this experiment, you will ensure that the application is highly available. Even if one of the task instance fails, it will not affect the application.
+**What**: In this experiment, you will test if the ECS application is highly available. Even if one of the ECS task fails, the application would be running at a lower capacity for a short duration and this should not affect the entire application.
 
 
 **How**: For injecting faults into the applications and AWS services, we will use the AWS Fault Injection Simulation (FIS) service. There are two steps in running AWS FIS experiments:  
 a. **First step** is to create an experiment template, which instructs AWS FIS on what this experiment is about and against which resources the experiment will be run against.  
 b. **Second step** is actual running of the experiment. 
 
-#### Let us create an experiment template for the first experiment.
+#### Let us create an experiment template for the second experiment.
 
+1. Navigate to AWS FIS console. You can also use this [direct link:](https://console.aws.amazon.com/fis/home?region=us-west-2#Home) 
+2. Choose Experiment Templates on the left side.
+![Create Experiment Template Home](/document/images/1-FIS-Create-Home.png "Create Experiment Template")
+
+3. Click on 'Create Experiment Template'. This will open another page which helps in creating the FIS experiment template.
+4. For Description enter "Testing if the application is accessbile even if one of the task fails".
+5. For Name enter "Test-ECS-Task-Failure" 
+6. For IAM Role, choose the IAM Role (from drodown) that was created as part of CloudFormation. The IAM Role name will be starting with 'EcsFisStack-fisrole....'
+![Create Experiment Template Basic](/document/images/2-FIS-Create-Exp.png "Create Experiment Template First part")
+
+7. Let us add actions. Actions define the kind of operation that FIS will execute. Click on 'Add Actions', in the Actions section. 
+8. For Name enter "Interrupting-ECS-Task".
+9. For Action Type, choose "aws:ecs:stop-task" from the dropdown. 
+10. For Target, choose "Tasks-Target-1".
+11. Click on Save at the top of Actions menu. 
+![FIS Action](/document/images/2-FIS-Action.png "FIS Action")
+
+12. Lets now define the targets against which the action will be executed. When you created an action, a default target named 'Tasks-Target-1' was created in step 10. You should see that in the target section. Click on Edit. 
+13. In the previous experiment, we observed how to randomly choose the resources based on tags. In this experiment, we will choose the option to select the task directly. For the Target method, choose 'Resource IDs'.
+14. Select one task from the dropdown and click on Save. 
+![FIS Target](/document/images/2-FIS-Target.png "FIS Target")
+15. Click on 'Create Experiment Template' at the end of the page. It will ask for an additional confirmation in the popup. Enter create and confirm.
+
+#### Its time now to run the experiment and validate the experiemnt scenario. 
+
+1. Click on Actions and click on Start.
+2. In the next page, click on Start Experiment. 
+3. In the popup, enter 'start' and confirm.
+![FIS Start](/document/images/2-FIS-ExpTemplate-Start.png "FIS Start")
+
+
+#### Lets access the application:
+
+1. Get the application URL from the following command
+    ```
+    appURL=`aws cloudformation describe-stacks --region us-west-2 --stack-name=EcsFisStack --query "Stacks[0].Outputs[?OutputKey=='FisEcsUrl'].OutputValue[]" --output text` 
+    ```
+2. Hit the URL either in the browser or even from Cloud9 command line
+    ```
+    curl $appURL
+    ```
+3. What do you observe? The application is still accessible. 
+
+#### Lets observe whats happening within ECS
+1. Navigate to ECS Cluster home page. Use this [direct link](https://us-west-2.console.aws.amazon.com/ecs/home?region=us-west-2#/clusters)
+2. Select the ECS Cluster thas is created. The cluster starts with the name 'EcsFisStack-Cluster'
+![ECS Cluster](/document/images/2-ECS-Cluster.png "ECS Cluster")
+3. Choose the Services tab and click on the service name. The service name will being with 'EcsFisStack-SampleAppService'
+![ECS Service](/document/images/2-ECS-Service.png "ECS Service")
+4. Click on the Events tab. This will list all the events that happened within the services. Observe the latest five events. 
+    a. The fifth event says that the ECS task is getting de-registered. This is due to the FIS experiment that we executed.
+    b. The third event says that a new ECS task is being provisioned. This is because, ECS service has been configured to run two tasks at any given point in time. Since one task was terminated by the experiment, ECS Service identified that the desired tasks is not matching the actual tasks. Hence it will balance this by bringing up a new task. 
+![ECS Events](/document/images/2-ECS-Events.png "ECS Events")
+
+</details>
