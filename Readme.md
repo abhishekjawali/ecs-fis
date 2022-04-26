@@ -16,7 +16,7 @@ You will execute the following experiment scenarios against an application that 
 2. Execute the following command. It will take approximately 5 mins to create all the required resources
     ```
     cd ~/environment/devlabs
-    ./templates/deploy.sh
+    ./setup.sh
     ```
     The following resources will be created in your account:
     1. AWS VPC with 3 public subnets and 3 private subnets, spread across 3 Availability Zones.
@@ -24,7 +24,13 @@ You will execute the following experiment scenarios against an application that 
     3. Task Definition for a sample application
     4. An ECS Service that has 1 replica of the task
        
-       
+
+## Cleanup
+1. Delete the experiment templates. Execute the command in the Cloud9 IDE
+    ```
+    for id in $(aws fis list-experiment-templates --query 'experimentTemplates[*].id' --output text) ; do aws fis delete-experiment-template --id $id ; done
+    ```
+
 ## Run the FIS experiments
 
 <details>

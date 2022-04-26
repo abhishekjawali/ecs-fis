@@ -9,6 +9,7 @@ import * as iam from "aws-cdk-lib/aws-iam";
 import * as fis from "aws-cdk-lib/aws-fis";
 
 
+
 export class EcsFisStack extends Stack {
 
   public vpc: ec2.IVpc;
@@ -49,6 +50,7 @@ export class EcsFisStack extends Stack {
     asg.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"));
 
     const taskDefinition = new ecs.Ec2TaskDefinition(this, "SampleAppTaskDefinition", {
+      networkMode: ecs.NetworkMode.AWS_VPC
     });
 
     taskDefinition.addContainer("SampleAppContainer", {
