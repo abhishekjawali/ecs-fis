@@ -11,9 +11,6 @@ Parameters:
     Default: https://github.com/abhishekjawali/ecs-fis.git
 
 Resources:
-################## PERMISSIONS AND ROLES #################
-  
-
   Cloud9Instance:
     Description: "Cloud9 environment for the ANZ Summit DevLabs"
     Type: AWS::Cloud9::EnvironmentEC2
