@@ -10,7 +10,7 @@ You will execute the following experiment scenarios against an application that 
  - How to test a failure of an ECS task?
 
 
-## Environment Setup
+## Environment Setup (This has to be performed by operator. This is a one time setup only)
 
 1. Login to the Cloud9 instance that is already provisioned for you.   
 2. Execute the following command. It will take approximately 5 mins to create all the required resources
@@ -25,7 +25,7 @@ You will execute the following experiment scenarios against an application that 
     4. An ECS Service that has 1 replica of the task
        
 
-## Cleanup
+## Cleanup (For subsequent re-runs, execute the below scripts to get the application to initial state)
 1. Delete the experiment templates. Execute the command in the Cloud9 IDE
     ```
     for id in $(aws fis list-experiment-templates --query 'experimentTemplates[*].id' --output text) ; do aws fis delete-experiment-template --id $id ; done
