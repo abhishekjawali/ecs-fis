@@ -116,3 +116,19 @@ b. **Second step** is actual running of the experiment.
 4. Notice that the even when one of the instance is terminated, the application is still accessbile. This is due to HA configuration of the ECS task as well as the EC2 instance. 
 
 </details>
+
+
+<details>
+<summary>Experiment 2: </summary>  
+
+### Experiment 2: 
+
+**What**: In this experiment, you will ensure that the application is highly available. Even if one of the task instance fails, it will not affect the application.
+
+
+**How**: For injecting faults into the applications and AWS services, we will use the AWS Fault Injection Simulation (FIS) service. There are two steps in running AWS FIS experiments:  
+a. **First step** is to create an experiment template, which instructs AWS FIS on what this experiment is about and against which resources the experiment will be run against.  
+b. **Second step** is actual running of the experiment. 
+
+#### Let us create an experiment template for the first experiment.
+
