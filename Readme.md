@@ -31,6 +31,11 @@ You will execute the following experiment scenarios against an application that 
     for id in $(aws fis list-experiment-templates --query 'experimentTemplates[*].id' --output text) ; do aws fis delete-experiment-template --id $id ; done
     ```
 
+2. Reset the ECS Instance and ECS Tasks
+    ```
+    
+    ```
+
 ## Run the FIS experiments
 
 <details>

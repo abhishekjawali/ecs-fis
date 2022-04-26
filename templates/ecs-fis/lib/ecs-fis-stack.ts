@@ -26,28 +26,34 @@ export class EcsFisStack extends Stack {
 
     //*** Begin ECS Block ***/ 
     const cluster = new ecs.Cluster(this, "Cluster", {
-      vpc: this.vpc
-    });
-
-    const asg = new autoscaling.AutoScalingGroup(this, "EcsAsgProvider", {
       vpc: this.vpc,
-      instanceType: new ec2.InstanceType("t3.medium"),
-      machineImage: ecs.EcsOptimizedImage.amazonLinux2(),
-      desiredCapacity: 1
+      clusterName: 'ECS-FIS'
     });
 
-    Tags.of(asg).add("DevLab","ANZ");
+    cluster.addCapacity('DefaultAutoScalingGroupCapacity', {
+      instanceType: new ec2.InstanceType("t3.medium"),
+      desiredCapacity: 1,
+    });
 
-    cluster.addAsgCapacityProvider(
-      new ecs.AsgCapacityProvider(this, "CapacityProvider", {
-        autoScalingGroup: asg,
-        capacityProviderName: "fisWorkshopCapacityProvider",
-        enableManagedTerminationProtection: false
-      })
-    );
+    // const asg = new autoscaling.AutoScalingGroup(this, "EcsAsgProvider", {
+    //   vpc: this.vpc,
+    //   instanceType: new ec2.InstanceType("t3.medium"),
+    //   machineImage: ecs.EcsOptimizedImage.amazonLinux2(),
+    //   desiredCapacity: 1
+    // });
+
+    // Tags.of(asg).add("DevLab","ANZ");
+
+    // cluster.addAsgCapacityProvider(
+    //   new ecs.AsgCapacityProvider(this, "CapacityProvider", {
+    //     autoScalingGroup: asg,
+    //     capacityProviderName: "fisWorkshopCapacityProvider",
+    //     enableManagedTerminationProtection: false
+    //   })
+    // );
 
     // Add SSM access policy to nodegroup
-    asg.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"));
+    // asg.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"));
 
     const taskDefinition = new ecs.Ec2TaskDefinition(this, "SampleAppTaskDefinition", {
       networkMode: ecs.NetworkMode.AWS_VPC
@@ -66,13 +72,14 @@ export class EcsFisStack extends Stack {
 
     const sampleAppService = new ecs_patterns.ApplicationLoadBalancedEc2Service(this, "SampleAppService", {
       cluster: cluster,
+      serviceName: 'sample-app-service',
       cpu: 256,
       desiredCount: 2,
       memoryLimitMiB: 512,
       taskDefinition: taskDefinition
     });
 
-    asg.attachToApplicationTargetGroup(sampleAppService.targetGroup);
+    //asg.attachToApplicationTargetGroup(sampleAppService.targetGroup);
     //*** End ECS Block ***/ 
 
     //*** Begin FIS IAM Block ***/ 
