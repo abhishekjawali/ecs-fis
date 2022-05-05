@@ -150,7 +150,7 @@ b. **Second step** is actual running of the experiment.
 ![Create Experiment Template Home](/document/images/1-FIS-Create-Home.png "Create Experiment Template")
 
 3. Click on 'Create Experiment Template'. This will open another page which helps in creating the FIS experiment template.
-4. For Description enter "Testing if the application is accessbile even if one of the task fails".
+4. For Description enter "Testing if the application is accessible even if one of the task fails".
 5. For Name enter "Test-ECS-Task-Failure" 
 6. For IAM Role, choose the IAM Role (from drodown) that was created as part of CloudFormation. The IAM Role name will be starting with 'EcsFisStack-fisrole....'
 ![Create Experiment Template Basic](/document/images/2-FIS-Create-Exp.png "Create Experiment Template First part")
@@ -164,7 +164,7 @@ b. **Second step** is actual running of the experiment.
 
 12. Lets now define the targets against which the action will be executed. When you created an action, a default target named 'Tasks-Target-1' was created in step 10. You should see that in the target section. Click on Edit. 
 13. In the previous experiment, we observed how to randomly choose the resources based on tags. In this experiment, we will choose the option to select the task directly. For the Target method, choose 'Resource IDs'.
-14. Select one task from the dropdown and click on Save. 
+14. Select one task from the dropdown for 'Resource IDs' and click on Save. 
 ![FIS Target](/document/images/2-FIS-Target.png "FIS Target")
 15. Click on 'Create Experiment Template' at the end of the page. It will ask for an additional confirmation in the popup. Enter create and confirm.
 
@@ -190,12 +190,12 @@ b. **Second step** is actual running of the experiment.
 
 #### Lets observe whats happening within ECS
 1. Navigate to ECS Cluster home page. Use this [direct link](https://us-west-2.console.aws.amazon.com/ecs/home?region=us-west-2#/clusters)
-2. Select the ECS Cluster thas is created. The cluster starts with the name 'EcsFisStack-Cluster'
+2. Select the ECS Cluster thas is created with the name 'ECS-FIS'.
 ![ECS Cluster](/document/images/2-ECS-Cluster.png "ECS Cluster")
-3. Choose the Services tab and click on the service name. The service name will being with 'EcsFisStack-SampleAppService'
+3. Choose the Services tab and click on the service name 'sample-app-service'. 
 ![ECS Service](/document/images/2-ECS-Service.png "ECS Service")
-4. Click on the Events tab. This will list all the events that happened within the services. Observe the latest five events. 
-    a. The fifth event says that the ECS task is getting de-registered. This is due to the FIS experiment that we executed.
+4. Click on the Events tab. This will list all the events that happened within the services. Observe the latest five events.    
+    a. The fifth event says that the ECS task is getting de-registered. This is due to the FIS experiment that we executed.   
     b. The third event says that a new ECS task is being provisioned. This is because, ECS service has been configured to run two tasks at any given point in time. Since one task was terminated by the experiment, ECS Service identified that the desired tasks is not matching the actual tasks. Hence it will balance this by bringing up a new task. 
 ![ECS Events](/document/images/2-ECS-Events.png "ECS Events")
 
