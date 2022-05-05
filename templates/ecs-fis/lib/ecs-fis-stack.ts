@@ -30,31 +30,31 @@ export class EcsFisStack extends Stack {
       clusterName: 'ECS-FIS'
     });
 
-    cluster.addCapacity('DefaultAutoScalingGroupCapacity', {
-      instanceType: new ec2.InstanceType("t3.medium"),
-      desiredCapacity: 1,
-      autoScalingGroupName: 'ecs-fis-asg'
-    });
-
-    // const asg = new autoscaling.AutoScalingGroup(this, "EcsAsgProvider", {
-    //   vpc: this.vpc,
+    // cluster.addCapacity('DefaultAutoScalingGroupCapacity', {
     //   instanceType: new ec2.InstanceType("t3.medium"),
-    //   machineImage: ecs.EcsOptimizedImage.amazonLinux2(),
-    //   desiredCapacity: 1
+    //   desiredCapacity: 1,
+    //   autoScalingGroupName: 'ecs-fis-asg'
     // });
 
-    // Tags.of(asg).add("DevLab","ANZ");
+    const asg = new autoscaling.AutoScalingGroup(this, "EcsAsgProvider", {
+      vpc: this.vpc,
+      instanceType: new ec2.InstanceType("t3.medium"),
+      machineImage: ecs.EcsOptimizedImage.amazonLinux2(),
+      desiredCapacity: 1
+    });
 
-    // cluster.addAsgCapacityProvider(
-    //   new ecs.AsgCapacityProvider(this, "CapacityProvider", {
-    //     autoScalingGroup: asg,
-    //     capacityProviderName: "fisWorkshopCapacityProvider",
-    //     enableManagedTerminationProtection: false
-    //   })
-    // );
+    Tags.of(asg).add("DevLab","ANZ");
+
+    cluster.addAsgCapacityProvider(
+      new ecs.AsgCapacityProvider(this, "CapacityProvider", {
+        autoScalingGroup: asg,
+        capacityProviderName: "fisWorkshopCapacityProvider",
+        enableManagedTerminationProtection: false
+      })
+    );
 
     // Add SSM access policy to nodegroup
-    // asg.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"));
+    asg.role.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"));
 
     const taskDefinition = new ecs.Ec2TaskDefinition(this, "SampleAppTaskDefinition", {
       networkMode: ecs.NetworkMode.AWS_VPC

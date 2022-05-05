@@ -59,7 +59,7 @@ b. **Second step** is actual running of the experiment.
 ![Create Experiment Template Home](/document/images/1-FIS-Create-Home.png "Create Experiment Template")
 
 3. Click on 'Create Experiment Template'. This will open another page which helps in creating the FIS experiment template.
-4. For Description enter "Testing if the application is still accessbile if on the ECS Instance is down".
+4. For Description enter "Testing if the application is still accessible if on the ECS Instance is down".
 5. For Name enter "Test-ECS-Instance-Failure" 
 6. For IAM Role, choose the IAM Role (from drodown) that was created as part of CloudFormation. The IAM Role name will be starting with 'EcsFisStack-fisrole....'
 ![Create Experiment Template Basic](/document/images/1-FIS-Create-Exp.png "Create Experiment Template First part")
@@ -76,7 +76,7 @@ b. **Second step** is actual running of the experiment.
 14. Click Add New tag. 
 15. For Key, provide 'DevLab'. For Value, enter 'ANZ'.
 16. Let us target only the running instances. Click on 'Add New Filter'. Enter 'State.Name' for Attribute Path and 'running' for value.
-17. In the Selection Mode dropdown, choose Percent and give the percentage value as 50.
+17. In the Selection Mode dropdown, choose Count and give the value for 'Number of resources' as 1.
 18. Leave all othere fields as it is. Click on Save. 
 ![FIS Target](/document/images/1-FIS-Target.png "FIS Target")
 
