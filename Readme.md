@@ -136,7 +136,7 @@ b. **Second step** is actual running of the experiment.
 
 ### Experiment 2: 
 
-**What**: In this experiment, you will test if the ECS application is highly available. Even if one of the ECS task fails, the application would be running at a lower capacity for a short duration and this should not affect the entire application.
+**What**: In this experiment, you will test if the ECS application is highly available. Even if one of the ECS task fails, the application would be running at a lower capacity for a short duration and this should not affect the entire application. ECS Service will bring up additional tasks to ensure that the desired number of tasks are running. 
 
 
 **How**: For injecting faults into the applications and AWS services, we will use the AWS Fault Injection Simulation (FIS) service. There are two steps in running AWS FIS experiments:  
